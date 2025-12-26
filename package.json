@@ -22,7 +22,15 @@
     "browser-automation",
     "testing"
   ],
-  "author": "",
+  "author": "Prashantt Vaishnava",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vastucartapps/PlayWrong.git"
+  },
+  "homepage": "https://github.com/vastucartapps/PlayWrong#readme",
+  "bugs": {
+    "url": "https://github.com/vastucartapps/PlayWrong/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.1",
