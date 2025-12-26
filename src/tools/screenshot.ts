@@ -3,6 +3,9 @@ import { join } from 'path';
 import type { BrowserManager } from '../browser-manager.js';
 import type { MCPToolResponse } from '../types/index.js';
 
+// Directory name for screenshots (like Playwright MCP's .playwright-mcp)
+const SCREENSHOT_DIR = '.playwrong';
+
 export async function screenshotTool(
   browserManager: BrowserManager,
   args: Record<string, unknown>
@@ -32,16 +35,21 @@ export async function screenshotTool(
     const viewportSize = session.page.viewportSize();
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
-    // Save to current working directory (like Playwright MCP)
+    // Create .playwrong directory if it doesn't exist
+    if (!existsSync(SCREENSHOT_DIR)) {
+      mkdirSync(SCREENSHOT_DIR, { recursive: true });
+    }
+
+    // Save to .playwrong directory (like Playwright MCP)
     const defaultFilename = `screenshot-${timestamp}.png`;
     const finalFilename = filename || defaultFilename;
+    const filepath = join(SCREENSHOT_DIR, finalFilename);
 
-    // Save directly to current working directory
-    writeFileSync(finalFilename, screenshot);
+    writeFileSync(filepath, screenshot);
 
     return {
       type: 'text',
-      text: `Screenshot saved: ${finalFilename}\nDimensions: ${viewportSize?.width}x${viewportSize?.height}px\nPage: ${session.page.url()}`,
+      text: `Screenshot saved: ${filepath}\nDimensions: ${viewportSize?.width}x${viewportSize?.height}px\nPage: ${session.page.url()}`,
     };
   } catch (error) {
     return {

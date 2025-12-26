@@ -1,6 +1,10 @@
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { join } from 'path';
 import type { BrowserManager } from '../browser-manager.js';
 import type { MCPToolResponse } from '../types/index.js';
+
+// Directory for saved files (like Playwright MCP's .playwright-mcp)
+const OUTPUT_DIR = '.playwrong';
 
 // Extract a simplified DOM structure
 async function getSimplifiedStructure(page: import('playwright').Page): Promise<string> {
@@ -184,16 +188,23 @@ export async function getContentTool(
       };
     }
 
-    // HTML format: Save to current directory
+    // HTML format: Save to .playwrong directory
     if (format === 'html') {
       const html = await session.page.content();
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `page-content-${timestamp}.html`;
-      writeFileSync(filename, html);
+
+      // Create .playwrong directory if it doesn't exist
+      if (!existsSync(OUTPUT_DIR)) {
+        mkdirSync(OUTPUT_DIR, { recursive: true });
+      }
+
+      const filepath = join(OUTPUT_DIR, filename);
+      writeFileSync(filepath, html);
 
       return {
         type: 'text',
-        text: `Page: ${title}\nURL: ${url}\n\nFull HTML saved to: ${filename}`,
+        text: `Page: ${title}\nURL: ${url}\n\nFull HTML saved to: ${filepath}`,
       };
     }
 
