@@ -158,7 +158,7 @@ const TOOLS = [
   {
     name: 'get_page_content',
     description:
-      'Get the current page HTML, text content, title, and URL.',
+      'Get page content as accessibility snapshot (default), plain text, or HTML file.',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -166,9 +166,9 @@ const TOOLS = [
           type: 'string',
           description: 'Optional session ID',
         },
-        include_html: {
-          type: 'boolean',
-          description: 'Include full HTML. Default: true',
+        format: {
+          type: 'string',
+          description: 'Output format: "snapshot" (structured tree, default), "text" (plain text), or "html" (saves to file)',
         },
         show_browser: {
           type: 'boolean',
