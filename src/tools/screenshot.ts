@@ -1,3 +1,6 @@
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import { tmpdir } from 'os';
 import type { BrowserManager } from '../browser-manager.js';
 import type { MCPToolResponse } from '../types/index.js';
 
@@ -9,6 +12,7 @@ export async function screenshotTool(
     const sessionId = args.session_id as string | undefined;
     const fullPage = args.full_page !== false; // Default true
     const showBrowser = args.show_browser as boolean | undefined;
+    const savePath = args.save_path as string | undefined;
 
     const session = sessionId
       ? browserManager.getSession(sessionId)
@@ -26,12 +30,17 @@ export async function screenshotTool(
       type: 'png',
     });
 
-    const base64 = screenshot.toString('base64');
     const viewportSize = session.page.viewportSize();
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `screenshot-${timestamp}.png`;
+    const filepath = savePath || join(tmpdir(), filename);
+
+    // Save to file
+    writeFileSync(filepath, screenshot);
 
     return {
       type: 'text',
-      text: `Screenshot taken successfully\n\nDimensions: ${viewportSize?.width}x${viewportSize?.height}px\n\nImage (Base64): data:image/png;base64,${base64}`,
+      text: `Screenshot saved successfully!\n\nFile: ${filepath}\nDimensions: ${viewportSize?.width}x${viewportSize?.height}px\nPage: ${session.page.url()}`,
     };
   } catch (error) {
     return {
