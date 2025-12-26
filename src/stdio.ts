@@ -41,17 +41,29 @@ const server = new Server(
 const TOOLS = [
   {
     name: 'take_screenshot',
-    description: 'Take a screenshot and save to current directory.',
+    description: 'Take a screenshot and save to .playwrong/ directory. Supports mobile, tablet, desktop viewports.',
     inputSchema: {
       type: 'object' as const,
       properties: {
+        viewport: {
+          type: 'string',
+          description: 'Viewport preset: "mobile" (375x667), "tablet" (768x1024), "desktop" (1280x720), "desktop-hd" (1920x1080)',
+        },
+        width: {
+          type: 'number',
+          description: 'Custom viewport width (use with height for custom size)',
+        },
+        height: {
+          type: 'number',
+          description: 'Custom viewport height (use with width for custom size)',
+        },
         full_page: {
           type: 'boolean',
-          description: 'Capture entire page (true) or viewport (false). Default: true',
+          description: 'Capture entire page (true) or viewport only (false). Default: true',
         },
         filename: {
           type: 'string',
-          description: 'Filename for screenshot. Default: screenshot-{timestamp}.png',
+          description: 'Custom filename. Default: screenshot-{viewport}-{timestamp}.png',
         },
       },
       required: [],
