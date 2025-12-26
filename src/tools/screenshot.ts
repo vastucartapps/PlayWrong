@@ -1,6 +1,5 @@
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import { tmpdir } from 'os';
 import type { BrowserManager } from '../browser-manager.js';
 import type { MCPToolResponse } from '../types/index.js';
 
@@ -12,7 +11,7 @@ export async function screenshotTool(
     const sessionId = args.session_id as string | undefined;
     const fullPage = args.full_page !== false; // Default true
     const showBrowser = args.show_browser as boolean | undefined;
-    const savePath = args.save_path as string | undefined;
+    const filename = args.filename as string | undefined;
 
     const session = sessionId
       ? browserManager.getSession(sessionId)
@@ -32,15 +31,17 @@ export async function screenshotTool(
 
     const viewportSize = session.page.viewportSize();
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const filename = `screenshot-${timestamp}.png`;
-    const filepath = savePath || join(tmpdir(), filename);
 
-    // Save to file
-    writeFileSync(filepath, screenshot);
+    // Save to current working directory (like Playwright MCP)
+    const defaultFilename = `screenshot-${timestamp}.png`;
+    const finalFilename = filename || defaultFilename;
+
+    // Save directly to current working directory
+    writeFileSync(finalFilename, screenshot);
 
     return {
       type: 'text',
-      text: `Screenshot saved successfully!\n\nFile: ${filepath}\nDimensions: ${viewportSize?.width}x${viewportSize?.height}px\nPage: ${session.page.url()}`,
+      text: `Screenshot saved: ${finalFilename}\nDimensions: ${viewportSize?.width}x${viewportSize?.height}px\nPage: ${session.page.url()}`,
     };
   } catch (error) {
     return {

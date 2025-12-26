@@ -39,13 +39,17 @@ const server = new Server(
 const TOOLS = [
   {
     name: 'take_screenshot',
-    description: 'Take a screenshot of the current page. Returns base64-encoded PNG image.',
+    description: 'Take a screenshot and save to current directory.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         full_page: {
           type: 'boolean',
           description: 'Capture entire page (true) or viewport (false). Default: true',
+        },
+        filename: {
+          type: 'string',
+          description: 'Filename for screenshot. Default: screenshot-{timestamp}.png',
         },
       },
       required: [],

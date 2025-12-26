@@ -1,6 +1,4 @@
 import { writeFileSync } from 'fs';
-import { join } from 'path';
-import { tmpdir } from 'os';
 import type { BrowserManager } from '../browser-manager.js';
 import type { MCPToolResponse } from '../types/index.js';
 
@@ -186,17 +184,16 @@ export async function getContentTool(
       };
     }
 
-    // HTML format: Save to file
+    // HTML format: Save to current directory
     if (format === 'html') {
       const html = await session.page.content();
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `page-content-${timestamp}.html`;
-      const filepath = join(tmpdir(), filename);
-      writeFileSync(filepath, html);
+      writeFileSync(filename, html);
 
       return {
         type: 'text',
-        text: `Page: ${title}\nURL: ${url}\n\nFull HTML saved to: ${filepath}`,
+        text: `Page: ${title}\nURL: ${url}\n\nFull HTML saved to: ${filename}`,
       };
     }
 
