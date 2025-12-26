@@ -4,6 +4,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ListPromptsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { BrowserManager } from './browser-manager.js';
 
@@ -152,6 +154,16 @@ const TOOLS = [
 // Handle list tools
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return { tools: TOOLS };
+});
+
+// Handle list resources (empty - we don't have resources)
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  return { resources: [] };
+});
+
+// Handle list prompts (empty - we don't have prompts)
+server.setRequestHandler(ListPromptsRequestSchema, async () => {
+  return { prompts: [] };
 });
 
 // Handle tool calls
