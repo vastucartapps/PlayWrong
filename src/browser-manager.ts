@@ -31,7 +31,10 @@ export class BrowserManager {
         browser = await chromium.launch({ headless: useHeadless });
       }
 
-      const page = await browser.newPage();
+      // Create page with desktop viewport (1280x720)
+      const page = await browser.newPage({
+        viewport: { width: 1280, height: 720 },
+      });
       const sessionId = uuidv4();
 
       // Initialize console log storage for this session
